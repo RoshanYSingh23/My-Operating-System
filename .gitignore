@@ -1,0 +1,18 @@
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore object files
+*.o
+
+# Ignore compiled OS binary
+roshos.bin
+
+# Ignore generated ISO image
+roshos.iso
+
+# Ignore temporary ISO build directory
+iso/
+
+# Optional: Ignore backup files created by some editors
+*~
+
