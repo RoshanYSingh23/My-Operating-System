@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gdt.h"
 typedef void (*constructor)();
 
 /**
@@ -33,5 +34,6 @@ extern "C" void callConstructors() {
  */
 extern "C" void roshMain(void* multiboot_structure, uint32_t magic) {
     printf("Hello, World!");      // Without headers, printf is not recognized, so we buiild our own
-    while(1);                    // Loop at the end
+    GlobalDescriptorTable gdt;    // Create a GDT object, which will initialize the GDT
+    while(1);                     // Loop at the end
 }
