@@ -1,5 +1,4 @@
-using uint8_t  = unsigned char;
-using uint16_t = unsigned short;
+#include "types.h"
 typedef void (*constructor)();
 
 /**
@@ -12,7 +11,7 @@ typedef void (*constructor)();
  * Currently, we leave them at their default value, so as to print in black and white
  */
 void printf(const char* str) {
-    static unsigned short* screen_ptr = (unsigned short*) 0xb8000; // Video memory address
+    static uint16_t* screen_ptr = (uint16_t*) 0xb8000; // Video memory address
     for(int i=0; str[i]!='\0'; i++) {
         // Since unsigned short is 2 bytes, we copy the colour byte, and combine with character byte
         //screen_ptr[i] = (screen_ptr[i] & 0xFF00) | str[i];
@@ -32,7 +31,7 @@ extern "C" void callConstructors() {
 /**
  * extern "C" forces the compiler to keep the name of the function as it is in the .o file too
  */
-extern "C" void roshMain(void* multiboot_structure, unsigned int magic) {
+extern "C" void roshMain(void* multiboot_structure, uint32_t magic) {
     printf("Hello, World!");      // Without headers, printf is not recognized, so we buiild our own
     while(1);                    // Loop at the end
 }

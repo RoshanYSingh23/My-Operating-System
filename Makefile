@@ -41,6 +41,6 @@ roshos.iso: roshos.bin
 	grub-mkrescue --output=$@ iso
 	sudo rm -rf iso
 
-run: mykernel.iso
+run: roshos.iso
 	(killall qemu-system-i386 && sleep 1) || true
 	qemu-system-i386 -enable-kvm -cpu host -m 128M -boot d -cdrom roshos.iso -serial stdio
