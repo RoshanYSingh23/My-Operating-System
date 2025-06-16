@@ -1,7 +1,7 @@
 /* This header file is for the global descriptor table, and contains the size of memory segment, the pointers, and access flags/bits*/
-#include "types.h"
 #ifndef __GDT_H
 #define __GDT_H
+#include "types.h"
 class GlobalDescriptorTable {
     public:
         class SegmentDescriptor {   // Total of 64b = 8B

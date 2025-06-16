@@ -1,6 +1,6 @@
 CMP := g++
 ASM := as
-OBJ := loader.o gdt.o kernel.o
+OBJ := loader.o gdt.o port.o kernel.o
 
 # 32 bit compilation, so -m32 and --32
 # The -fno-use-cxa-atexit flag is used to disable the use of the C++ atexit() function
