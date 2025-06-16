@@ -44,3 +44,8 @@ roshos.iso: roshos.bin
 run: roshos.iso
 	(killall qemu-system-i386 && sleep 1) || true
 	qemu-system-i386 -enable-kvm -cpu host -m 128M -boot d -cdrom roshos.iso -serial stdio
+
+.PHONY: clean
+
+clean:
+	sudo rm -f $(OBJ) mykernel.bin mykernel.iso
