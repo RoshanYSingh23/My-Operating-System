@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gdt.h"
+#include "interrupts.h"
 typedef void (*constructor)();
 
 /** 
@@ -40,7 +41,7 @@ inline void clear_screen() {
  * The upper 4 bits are the background colour, and the lower 4 bits are the foreground colour
  * Currently, we leave them at their default value, so as to print in black and white
  */
-void printf(const char* str) {
+void printf(char* str) {
     for (int i = 0; str[i]; ++i) {
         char ch = str[i];
         switch(str[i]) {
@@ -91,5 +92,8 @@ extern "C" void roshMain(void* multiboot_structure, uint32_t magic) {
     printf("Hello, World!");
     printf("Hi");
     GlobalDescriptorTable gdt;    // Create a GDT object, which will initialize the GDT
+    // ← ADD THIS: load our flat data selector (0x10)
+    InterruptManager interrupts(&gdt); // Create an InterruptManager object, which will initialize the IDT
+    interrupts.Activate();         // Activate the interrupt manager, i.e., enable interrupts
     while(1);                     // Loop at the end
 }

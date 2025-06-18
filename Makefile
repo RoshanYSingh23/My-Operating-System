@@ -1,6 +1,6 @@
 CMP := g++
 ASM := as
-OBJ := loader.o gdt.o port.o kernel.o
+OBJ := loader.o gdt.o port.o interrupts.o interruptstubs.o kernel.o
 
 # 32 bit compilation, so -m32 and --32
 # The -fno-use-cxa-atexit flag is used to disable the use of the C++ atexit() function
@@ -48,4 +48,4 @@ run: roshos.iso
 .PHONY: clean
 
 clean:
-	sudo rm -f $(OBJ) mykernel.bin mykernel.iso
+	sudo rm -f $(OBJ) roshos.bin roshos.iso

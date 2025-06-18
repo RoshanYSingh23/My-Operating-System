@@ -85,3 +85,21 @@ uint32_t GlobalDescriptorTable::SegmentDescriptor::Limit() {
         result = (result << 12) | 0xFFF; // If its a 32 bit entry, we need to shift it back to the original limit (last 12 bits)
     return result;
 }
+
+/**
+ * 0	bits 0–7	Limit[7:0]	Lower 8 bits of the segment limit.
+ * 1	bits 8–15	Limit[15:8]	Next‑higher 8 bits of the segment limit.
+ * 2	bits 0–7	Base[7:0]	Base address bits 0–7.
+ * 3	bits 8–15	Base[15:8]	Base address bits 8–15.
+ * 4	bits 16–23	Base[23:16]	Base address bits 16–23.
+ * 5	bits 0–3	Type	“Type” nibble (read/write, executable, system vs data, etc.) bits 0–3 of the Access Byte.
+ *      bits 4	S (Descriptor Type)	0 = system descriptor, 1 = code/data descriptor
+ *      bits 5–6	DPL (Privilege)	Descriptor Privilege Level (0–3)
+ *      bit 7	P (Present)	1 = segment is present in memory
+ * 6	bits 0–3	Limit[19:16]	Upper 4 bits of the segment limit.
+ *      bit 4	AVL	Available for system software (unused by CPU)
+ *      bit 5	L (64‑bit)	1 = 64‑bit code segment (IA‑32e mode only)
+ *      bit 6	D/B (Default/Big)	0 = 16‑bit segment, 1 = 32‑bit segment
+ *      bit 7	G (Granularity)	0 = limit in bytes, 1 = limit in 4 KiB pages
+ * 7	bits 24–31	Base[31:24]	Base address bits 24–31.
+*/
