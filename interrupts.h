@@ -4,8 +4,27 @@
 #include "port.h"
 #include "gdt.h"
 
-class InterruptManager {
+class InterruptManager;
+
+class InterruptHandler {
     protected:
+        uint8_t interruptNumber; // The interrupt number this handler is responsible for
+        InterruptManager* interruptManager; // Pointer to the interrupt manager that this handler belongs to
+        InterruptHandler(uint8_t interruptNumber, InterruptManager* interruptManager);
+        ~InterruptHandler(); // Destructor, currently does nothing
+
+    public:
+        virtual uint32_t HandleInterrupt(uint32_t esp); // Handle the interrupt, esp is the stack pointer            
+};
+
+class InterruptManager {
+    friend class InterruptHandler; // Allow InterruptHandler to access private members of InterruptManager
+
+    protected:
+        static InterruptManager* ActiveInterruptManager; // Pointer to the currently active interrupt manager, used for handling interrupts
+
+        InterruptHandler* handlers[256]; // Array of pointers to interrupt handlers for each interrupt number
+
         struct GateDescriptor {
             uint16_t handlerAddressLowBits;   // Lower 16 bits of the address to jump to when this interrupt fires
             uint16_t gdt_codeSegmentsSelector;     // Kernel segment selector
@@ -43,7 +62,12 @@ class InterruptManager {
         // This is needed as a separate function, as we first instantiate the IDT, then, we activate the hardware, and then start the interrupts
         // When we start the hardware, we already need the IDT set up
 
+        void Deactivate(); // Deactivate the interrupt manager, i.e., disable interrupts
+        // This is needed to disable interrupts when we switch to a different interrupt manager, or when
+
         static uint32_t handleInterrupt(uint8_t interruptNumber, uint32_t esp); // esp is the stack pointer, which will be given by interruptstubs.s
+        uint32_t DoHandleInterrupt(uint8_t interruptNumber, uint32_t esp); // This function will handle the interrupt, i.e., call the appropriate handler
+        // This function is called by handleInterrupt, and it will call the appropriate handler for the interrupt number
         
         static void IgnoreInterruptRequest(); // This function will ignore the interrupt request, i.e., do nothing
 

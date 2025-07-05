@@ -10,14 +10,14 @@
 .macro HandleException num
 .global _ZN16InterruptManager16HandleException\num\()Ev   # Similar name, 26 instead of 15 by cpp convention 
 _ZN16InterruptManager16HandleException\num\()Ev:
-    movb $\num, (interruptNumber)
+    movb $\num, (interruptnumber)
     jmp int_bottom
 .endm
 
 .macro HandleInterruptRequest num
 .global _ZN16InterruptManager26HandleInterruptRequest\num\()Ev   # Similar name, 26 instead of 15 by cpp convention 
 _ZN16InterruptManager26HandleInterruptRequest\num\()Ev:
-    movb $\num + IRQ_BASE, (interruptNumber)
+    movb $\num + IRQ_BASE, (interruptnumber)
     jmp int_bottom
 .endm
 
@@ -33,9 +33,9 @@ int_bottom:
     pushl %gs       # gs is for per-cpu data in kernel mode, fs for thread local storage in user mode
 
     pushl %esp
-    push (interruptNumber)
+    push (interruptnumber)
     call _ZN16InterruptManager15handleInterruptEhj
-            # addl $5, %esp, to remove the previous stuff, but we overwrite it, so not needed
+    #addl $8, %esp # to remove the previous stuff, but we overwrite it, so not needed
     movl %eax, %esp  # movb, to move a byte, movl for long, movw for a word (16 bits)
 
     popl %gs       # Restore the registers onto the previous stack, by popping from where we pushed them
@@ -44,12 +44,13 @@ int_bottom:
     popl %ds
     popa
 
-    movb    $0x20, %al     # EOI to master PIC
-    outb    %al, $0x20
+    #movb $0x20, %al
+    #outb %al, $0x20
 
-    _ZN16InterruptManager22IgnoreInterruptRequestEv:
+
+_ZN16InterruptManager22IgnoreInterruptRequestEv:
 
     iret           # Tell the processor, we have handled the interrupt, return to what you were doing before
 
 .data
-    interruptNumber: .byte 0 # interruptNumberis a byte, initialized to 0
+    interruptnumber: .byte 0 # interruptNumberis a byte, initialized to 0

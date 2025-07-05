@@ -1,6 +1,6 @@
 CMP := g++
 ASM := as
-OBJ := loader.o gdt.o port.o interrupts.o interruptstubs.o kernel.o
+OBJ := loader.o gdt.o port.o interruptstubs.o interrupts.o keyboard.o kernel.o
 
 # 32 bit compilation, so -m32 and --32
 # The -fno-use-cxa-atexit flag is used to disable the use of the C++ atexit() function
@@ -43,7 +43,12 @@ roshos.iso: roshos.bin
 
 run: roshos.iso
 	(killall qemu-system-i386 && sleep 1) || true
-	qemu-system-i386 -enable-kvm -cpu host -m 128M -boot d -cdrom roshos.iso -serial stdio
+	qemu-system-i386 \
+    -m 128M \
+    -cdrom roshos.iso \
+    -boot d \
+
+
 
 .PHONY: clean
 

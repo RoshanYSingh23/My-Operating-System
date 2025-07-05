@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gdt.h"
 #include "interrupts.h"
+#include "keyboard.h"
 typedef void (*constructor)();
 
 /** 
@@ -32,6 +33,7 @@ inline void clear_screen() {
     col = 0;
 }
 
+
 /**
  * @param Take the string to be printed as an input
  * Here, we use the standard video memory address 0xb8000
@@ -55,7 +57,6 @@ void printf(char* str) {
             default:
                 screen_ptr[80*col + row] = (0x07 << 8) | uint8_t(ch);
                 row++;
-
         }
         if(row >= 80) { // If we reach the end of the line, move to the next line
             clear_line(col, row);  // clear any leftover on this wrapped line
@@ -87,13 +88,13 @@ extern "C" void callConstructors() {
  */
 extern "C" void roshMain(void* multiboot_structure, uint32_t magic) {
     // Start by clearing the entire screen, so that we can print our own text
+    asm volatile("cli");
     clear_screen();
     printf("Hello, World!\n");      // Without headers, printf is not recognized, so we buiild our own
-    printf("Hello, World!");
-    printf("Hi");
     GlobalDescriptorTable gdt;    // Create a GDT object, which will initialize the GDT
-    // ← ADD THIS: load our flat data selector (0x10)
     InterruptManager interrupts(&gdt); // Create an InterruptManager object, which will initialize the IDT
+    KeyboardDriver keyboard(&interrupts); // Create a KeyboardDriver object, which will handle keyboard interrupts
     interrupts.Activate();         // Activate the interrupt manager, i.e., enable interrupts
-    while(1);                     // Loop at the end
+    
+    while(1);
 }
